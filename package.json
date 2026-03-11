@@ -1,0 +1,36 @@
+{
+  "name": "ql-scripts",
+  "type": "module",
+  "version": "1.0.0",
+  "description": "",
+  "author": "",
+  "license": "ISC",
+  "keywords": [],
+  "main": "index.js",
+  "scripts": {
+    "start": "npm run u"
+  },
+  "dependencies": {
+    "@lzwme/fe-utils": "^1.8.2",
+    "axios": "^1.11.0",
+    "commander": "^13.1.0",
+    "console-log-colors": "^0.5.0",
+    "crypto-js": "^4.2.0",
+    "dayjs": "^1.11.13",
+    "enquirer": "^2.4.1",
+    "got": "^14.6.6",
+    "iconv-lite": "^0.7.2",
+    "json5": "^2.2.3",
+    "moment": "^2.30.1",
+    "node-notifier": "^10.0.1",
+    "tough-cookie": "^6.0.0"
+  },
+  "devDependencies": {
+    "@antfu/eslint-config": "^7.7.0",
+    "@iarna/toml": "^2.2.5",
+    "@types/crypto-js": "^4.2.2",
+    "@types/node": "^22.13.11",
+    "eslint": "^10.0.3",
+    "eslint-plugin-import-x": "^4.16.1"
+  }
+}
