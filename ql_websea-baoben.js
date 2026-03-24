@@ -3,13 +3,12 @@
  * 描述: 监控指定交易员的剩余特权保证金
  * Author: c
  * Date: 2026-03-09
- * cron "0  * * *" ql_websea-baoben.js
+ * cron "* * 1 2" ql_websea-baoben.js
  * export WEBSEA_TRADERS = Shark killer,Dark Whale 多个交易员用逗号分隔
  */
 
 import process from 'node:process'
 import { httpRequest } from './utils/common.js'
-// ============================================================================================================
 import Env from './utils/env.js'
 import { getWebSeaTradersMockData } from './utils/mock.js'
 import { sendNotify } from './utils/sendNotify/index.js'
@@ -19,7 +18,7 @@ const $ = new Env('WebSea 交易员监控保证金余额监控')
 const env_name = 'WEBSEA_TRADERS' // 环境变量名字
 const env = process.env[env_name] || 'Soaring'
 const Notify = 1 // 是否通知, 1通知, 0不通知. 默认通知
-const mock = 1 // 是否使用mock数据, 1使用, 0不使用. 默认不使用
+const mock = 0 // 是否使用mock数据, 1使用, 0不使用. 默认不使用
 let msg = ''
 const LAST_MSG_KEY = 'websea_last_message'
 const LAST_MSG_TIME_KEY = 'websea_last_message_time'
@@ -27,19 +26,24 @@ const MESSAGE_INTERVAL = 30 * 60 * 1000 // 30分钟间隔
 
 // ======================================异步顺序==============================================
 async function run() {
-  await main()
-  await SendMsg(msg)
+  try {
+    await main()
+    await SendMsg(msg)
+  } catch (e) {
+    $.logErr(e)
+    $.done()
+    return
+  }
+
+  // 随机等待 0.5-2 秒
+  const randomWait = Math.random() * 1500 + 500 // 500ms - 2000ms
+  setTimeout(() => {
+    run()
+  }, randomWait)
 }
 
 console.log(`\n========== 开始监控交易员 ==========`)
-const timer = setInterval(() => {
-  run()
-    .catch((e) => {
-      clearInterval(timer)
-      $.logErr(e)
-      $.done()
-    })
-}, 5000)
+run()
 
 // ==================================脚本入口函数main()==============================================================
 async function main() {
@@ -79,7 +83,7 @@ async function main() {
           console.log(`🌸${item.nickname}: ${remainingMargin} ${remainingPrivilegeMargin}`)
           if (remainingMargin > 0 || remainingPrivilegeMargin > 0) {
             hasPositiveValue = true
-            positiveTraders.push(`${item.nickname}: ${remainingMargin} ${remainingPrivilegeMargin}`)
+            positiveTraders.push(`${item.nickname}: 保证金余额 ${remainingMargin} 特权保证金余额 ${remainingPrivilegeMargin}`)
           }
         }
 
