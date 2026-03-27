@@ -15,7 +15,4 @@ export default antfu({
     'style/brace-style': 0,
     'no-console': 0,
   },
-  globals: {
-    GM_addElement: true,
-  },
 })

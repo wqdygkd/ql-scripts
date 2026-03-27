@@ -19,7 +19,7 @@
 # ql repo <repo_url> <whitelist> <blacklist> <dependence> <branch> <extensions>
 ql repo https://github.com/wqdygkd/ql-scripts.git "ql_|ql-" "backup|todo|deprecated" "utils" "" "js ts"
 cd /ql/scripts
-pnpm add commander enquirer moment json5 crypto-js axios
+pnpm add axios qs
 ```
 
 ### 面板方式
@@ -35,7 +35,7 @@ pnpm add commander enquirer moment json5 crypto-js axios
 - 依赖文件：`utils`
 - 文件后缀：`js ts`
 
-依赖管理 -> `nodejs` 类型依赖添加：`commander enquirer moment json5 crypto-js axios`
+依赖管理 -> `nodejs` 类型依赖添加：`axios qs`
 
 ## 配置
 
