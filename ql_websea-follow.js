@@ -45,8 +45,8 @@ const WEBSEA_ADD_AMOUNT = process.env.WEBSEA_ADD_AMOUNT || '500'
 async function follow() {
   try {
     const result = await followHandler()
-
-    console.log(result.message)
+    const randomWait = Math.random() * 10000 + 10000
+    console.log(result.message + `等待${(randomWait/1000).toFixed()}s后继续...`)
 
     if (result.shouldSendNotify) {
       await SendMsg(result.message)
@@ -60,17 +60,14 @@ async function follow() {
       $.done()
       return
     }
+
+    await wait(randomWait)
+    follow()
   } catch (e) {
     $.logErr(e)
     $.done()
     return
   }
-
-  // 随机等待 3.5-3 秒
-  const randomWait = Math.random() * 1500 + 3500
-  setTimeout(() => {
-    follow()
-  }, randomWait)
 }
 
 async function addFollow() {
@@ -141,13 +138,20 @@ async function followHandler() {
       return {
         shouldContinue: true,
         shouldSendNotify: false,
-        message: `🌸保本带单交易员保证金余额不足，继续循环调用...`,
+        message: `🌸保本带单交易员保证金余额不足`,
       }
     } else if (resData.errmsg === '特权码无效') {
       return {
         shouldContinue: false,
         shouldSendNotify: true,
         message: `\n========== WebSea 跟单 ==========\n❌特权码无效，请检查特权码`,
+      }
+    } else if (resData.errmsg === '请勿重复操作') {
+      await wait(60000)
+      return {
+        shouldContinue: true,
+        shouldSendNotify: true,
+        message: `🌸 ${resData.errmsg}, 等待1分钟后继续`,
       }
     } else {
       return {
@@ -250,4 +254,12 @@ async function SendMsg(message) {
   } else {
     console.log(message)
   }
+}
+
+function wait(randomWait) {
+  return new Promise(resolve => {
+    setTimeout(() => {
+      resolve()
+    }, randomWait)
+  })
 }
